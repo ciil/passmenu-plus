@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+script=`basename "$0"`
+prefix=${PASSWORD_STORE_DIR-~/.password-store}
+password=$(find -L ${prefix} -type f -name '*.gpg' -printf '%P\n' | 
+                sed 's/\.gpg$//' | dmenu)
+
+[[ -n $password ]] || exit
+
+typeit=0
+hasuserfield=0
+
+opts=`getopt -o tu: --long typeit,userfield: -n '$script' -- "$@"`
+eval set -- "$opts"
+
+while true ; do
+    case "$1" in
+        -u|--userfield)
+            case "$2" in
+                "") shift 2 ;;
+                *) hasuserfield=1 ; userfield=$2 ; shift 2 ;;
+            esac ;;
+        -t|--typeit) typeit=1 ; shift ;;
+        --) shift ; break ;;
+        *) echo "Internal error!" ; exit 1 ;;
+    esac
+done
+
+if [ $hasuserfield -eq 1 -a $typeit -eq 1 ]; then
+    pass show "$password" |
+        awk -v userfield=$userfield 'BEGIN{ORS=""} NR==1 { pw=$0} match($0, userfield) {print $0 "\t" pw; exit}' |
+        sed -n "s/${userfield}:\s\?\(.*\)/\1/p" |
+        xdotool type --clearmodifiers --file -
+elif [ $typeit -eq 1 ]; then
+    pass show "$password" |
+        awk 'BEGIN{ORS=""} {print; exit}' |
+        xdotool type --clearmodifiers --file -
+elif [ $hasuserfield -eq 1 ]; then
+    pass show "$password" | 
+        awk -v userfield=$userfield 'match($0, userfield) {print $0; exit}' |
+        sed -n "s/${userfield}:\s\?\(.*\)/\1/p" 
+else
+    pass show -c "$password" 2>/dev/null
+fi
