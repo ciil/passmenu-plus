@@ -20,17 +20,23 @@ of files in the pass tree.
   tab, then enter the actual password. `passmenu-plus` automates this process by adding support for
   userfields.
 
-  This imposes some additional soft constraints on the file format, if you want to make use of userfields, 
-  as files would have to follow the following format:
+  This imposes some additional soft constraints on the file format. Any file format still works. However, if
+  you want to make use of userfields, then all lines starting with a keyword or -phrase ended by a colon will 
+  be individually callable:
   ```
   my super secret passphrase
+  just some general explanation of stuff, this line isn't callable by userfield!
   user: exampleuser
   mail: user@example.org
+  more general stuff amidst userfields.
   pin: 0000
   subdivision: Hackers
+  this is a userfield with spaces: yay
+
+  and even more text!
   ```
   Now, each of the userfields ending in a colon followed by a white space can be extracted on their own
-  with the `-u/--userfield` option, eg `passmenu-plus -u user`.
+  with the `-u/--userfield` option, eg `passmenu-plus -u user` or `passmenu-plus -u "this is a userfield with spaces"`.
 
   With just this option given, `passmenu-plus` acts as a wrapper around pass that outputs __only__ the 
   userfield to a shell (acting like the `pass --clip` option, but with human readable keys instead of line

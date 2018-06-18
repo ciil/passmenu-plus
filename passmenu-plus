@@ -28,7 +28,7 @@ done
 
 if [ $hasuserfield -eq 1 -a $typeit -eq 1 ]; then
     pass show "$password" |
-        awk -v userfield=$userfield 'BEGIN{ORS=""} NR==1 { pw=$0} match($0, userfield) {print $0 "\t" pw; exit}' |
+        awk -v userfield="$userfield" 'BEGIN{ORS=""} NR==1 { pw=$0} match($0, userfield) {print $0 "\t" pw; exit}' |
         sed -n "s/${userfield}:\s\?\(.*\)/\1/p" |
         xdotool type --clearmodifiers --file -
 elif [ $typeit -eq 1 ]; then
@@ -37,7 +37,7 @@ elif [ $typeit -eq 1 ]; then
         xdotool type --clearmodifiers --file -
 elif [ $hasuserfield -eq 1 ]; then
     pass show "$password" | 
-        awk -v userfield=$userfield 'match($0, userfield) {print $0; exit}' |
+        awk -v userfield="$userfield" 'match($0, userfield) {print $0; exit}' |
         sed -n "s/${userfield}:\s\?\(.*\)/\1/p" 
 else
     pass show -c "$password" 2>/dev/null
