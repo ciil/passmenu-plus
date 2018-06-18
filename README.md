@@ -48,5 +48,12 @@ of files in the pass tree.
   ```
   user@example.org      my super secret passphrase
   ```
+* _Direct input of just the userfield and copying the password to clipboard_: More and more websites use a two-tiered login
+  page nowadays: First you put in your username, have to press enter and only after that the password input field
+  appears. This is where the `-o/--only` option comes in. It will only type the given userfield and copy the password
+  itself to the clipboard to be inserted manually once the password field is visible.
+
+  For example, `passmenu-plus -tou user` would type `exampleuser` into the selected field directly, and have `my
+  super secret passphrase` saved in the clipboard for 45 seconds.
 * _Compatible to passmenu_: With just the `--typeit` option given, same as with the passmenu bundled with pass,
   `passmenu-plus` will just output the password, nothing else.
